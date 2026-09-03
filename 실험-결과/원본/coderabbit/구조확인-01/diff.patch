@@ -1,0 +1,15 @@
+diff --git a/src/flask/app.py b/src/flask/app.py
+index 620358695..a7ea2303c 100644
+--- a/src/flask/app.py
++++ b/src/flask/app.py
+@@ -1472,8 +1472,8 @@ def do_teardown_appcontext(
+         """
+         collect_errors = _CollectErrors()
+ 
+-        for func in reversed(self.teardown_appcontext_funcs):
+-            with collect_errors:
++        with collect_errors:
++            for func in reversed(self.teardown_appcontext_funcs):
+                 self.ensure_sync(func)(exc)
+ 
+         with collect_errors:
