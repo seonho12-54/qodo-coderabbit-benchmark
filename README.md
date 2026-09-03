@@ -1,13 +1,25 @@
-# Qodo vs CodeRabbit Benchmark
+# 플라스크 기반 Qodo·CodeRabbit 비교 실험
 
-실제 Flask 회귀 이력을 바탕으로 Qodo와 CodeRabbit의 탐지, 오탐, 근거 품질, 반복 안정성을 블라인드 비교하는 저장소입니다.
+여기는 Flask의 실제 과거 버그로 Qodo와 CodeRabbit의 실력을 비교하는 저장소야.
 
-- 실험 명세: [PLAN.md](PLAN.md)
-- 원본 Flask 안내: [UPSTREAM_README.md](UPSTREAM_README.md)
-- 원본 이력·GitHub 메타데이터: [benchmark/ARCHIVE.md](benchmark/ARCHIVE.md)
-- 원본 프로젝트: <https://github.com/pallets/flask>
+- [전체 실험을 쉽게 설명한 문서](플라스크-경쟁사-비교-실험서.md)
+- [원본 Flask 안내](UPSTREAM_README.md)
+- [원본 이력과 GitHub 자료](benchmark/ARCHIVE.md)
+- [원본 Flask 저장소](https://github.com/pallets/flask)
 
-리뷰가 끝나기 전에는 `.benchmark-private/`의 정답표나 숨은 테스트를 커밋하지 않습니다.
+실험 흐름은 간단해.
+
+```text
+실제 Flask 버그 선택
+↓
+버그가 들어간 PR 생성
+↓
+Qodo와 CodeRabbit 리뷰
+↓
+숨은 테스트로 정답 확인
+↓
+둘 다 놓친 부분에서 우리 기능 찾기
+```
 
 ## 현재 상태
 
