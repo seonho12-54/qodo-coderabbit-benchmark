@@ -1,123 +1,113 @@
-# Flask 기반 Qodo·CodeRabbit 실전 비교
+# Flask 코드로 Qodo와 CodeRabbit 비교하기
 
-여기는 **Flask의 실제 과거 버그를 시험 문제로 바꿔 Qodo와 CodeRabbit의 코드 리뷰 실력을 검증하는 저장소**야.
+이 저장소는 **Flask에 실제로 있었던 버그를 다시 넣어 Qodo와 CodeRabbit이 찾는지 시험한 곳**이야.
 
-원래 경쟁 제품은 기능표만 보면 비슷해 보여.
-
-```text
-PR 요약
-↓
-버그 탐지
-↓
-수정 제안
-↓
-보안 검사
-```
-
-근데 우리가 알고 싶은 건 기능의 존재가 아니야.
-
-> 실제 장애 원인과 발생 조건을 정확히 찾고, 틀린 경고는 적게 남기며, 제안한 수정이 테스트를 통과하는가?
-
-## 실험 흐름
+## 무엇을 확인했나
 
 ```text
-Flask의 실제 과거 버그 선택
+Flask의 과거 버그를 고름
 ↓
-정답과 숨은 테스트 분리
+현재 코드에 버그를 다시 넣음
 ↓
-버그 PR과 정상 대조군 PR 준비
+같은 코드로 Qodo용 PR과 CodeRabbit용 PR을 만듦
 ↓
-Qodo와 CodeRabbit을 같은 조건으로 실행
+두 제품이 서로의 댓글을 못 보게 따로 리뷰시킴
 ↓
-리뷰 원문과 시간을 저장
-↓
-숨은 테스트로 탐지와 수정 제안을 검증
-↓
-두 제품이 반복해서 놓친 부분을 제품 요구사항으로 전환
+우리가 숨겨둔 정답 테스트로 결과를 확인
 ```
 
-## 지금 상태
+중요한 것은 댓글 개수가 아니야.
 
-| 작업 | 상태 |
-|---|---|
-| Flask 코드와 전체 Git 이력 보관 | 완료 |
-| closed 이슈 2,765개 아카이브·미러 | 완료 |
-| closed PR 2,897개 메타데이터 아카이브 | 완료 |
-| 실제 closed PR 객체 복원 | 500개에서 의도적으로 중단 |
-| 결함 PR 4개와 정상 대조군 PR 2개 | 완료 |
-| 제품별 쌍둥이 PR 12개 준비 | 완료 |
-| Qodo 1차 리뷰 6개 실행 | 완료 |
-| CodeRabbit 1차 리뷰 6개 실행 | 완료 |
-| 실행 기반 1차 판정 | 완료 |
-| 독립 판정자 블라인드 재판정 | 대기 |
-| 공통 허점 변형 재시험 | 대기 |
+**실제 버그의 원인, 버그가 생기는 조건, 사용자에게 생기는 문제를 맞혔는지**가 중요해.
 
-전체 closed PR의 원문 데이터는 이미 `benchmark/`에 있어. GitHub의 Pull Requests 탭에는 사용자가 정한 범위인 500개만 실제 PR 객체로 복원했어.
+## 현재 결과
+
+| 확인한 것 | Qodo | CodeRabbit |
+|---|---:|---:|
+| 버그 4개 중 제대로 찾은 수 | 3개 | 3개 |
+| 정상 코드 2개에 잘못 경고한 수 | 0개 | 0개 |
+| 버그를 처음 제대로 찾기까지 걸린 가운데 시간 | 70초 | 142초 |
+| 바로 적용할 수 있는 코드 수정안 | 0개 | 2개 |
+
+둘 다 P01·P03·P04는 찾았고 P02는 못 찾았어.
+
+CodeRabbit은 P03과 P04에 코드 수정안을 줬어. 우리가 직접 적용해 보니 P03은 완전히 고쳤고 P04는 일부 문제만 고쳤어.
+
+## 테스트 결과를 읽는 법
+
+```text
+P01~P04
++= 일부러 버그를 넣은 시험
++
++C01~C02
++= 버그가 없는 정상 코드 시험
++
++정답 테스트 실패
++= 버그가 진짜 발생함
++
++정답 테스트 통과
++= 그 버그가 없음
+```
+
+P01~P04에서 정답 테스트가 실패한 것은 실험이 실패했다는 뜻이 아니야. 우리가 일부러 넣은 버그가 실제로 발생했다는 뜻이야.
 
 ## 문서 읽는 순서
 
-1. [전체 진행 계획](문서/00-전체-진행계획.md)
-2. [Flask를 선택한 이유](문서/01-플라스크를-선택한-이유.md)
-3. [Qodo·CodeRabbit의 공식 주장](문서/02-경쟁사-공식주장.md)
-4. [평가와 판정 기준](문서/03-평가와-판정기준.md)
-5. 결함 케이스: [P01](실험-케이스/케이스-001.md), [P02](실험-케이스/케이스-002.md), [P03](실험-케이스/케이스-003.md), [P04](실험-케이스/케이스-004.md)
-6. 정상 대조군: [C01](실험-케이스/대조군-001.md), [C02](실험-케이스/대조군-002.md)
-7. [공개한 정답 테스트와 실행 기록](benchmark/oracles/pilot-2026-09-03/README.md)
-8. [Qodo 결과](실험-결과/Qodo-결과.md), [CodeRabbit 결과](실험-결과/CodeRabbit-결과.md)
-9. [한눈에 보는 비교표](04-한눈에-보는-비교표.md)
-10. [두 제품이 놓친 문제](05-두제품이-놓친-문제.md)
-11. [우리가 만들어야 할 기능](06-우리가-만들어야할-기능.md)
+1. [한눈에 보는 비교표](04-한눈에-보는-비교표.md)
+2. [Qodo 결과](실험-결과/Qodo-결과.md)
+3. [CodeRabbit 결과](실험-결과/CodeRabbit-결과.md)
+4. [두 제품이 함께 놓친 문제](05-두제품이-놓친-문제.md)
+5. [우리가 만들 MUOT](06-우리가-만들어야할-기능.md)
 
-한 장으로 먼저 보고 싶으면 [전체 실험 설명서](플라스크-경쟁사-비교-실험서.md)를 읽으면 돼.
+실험 방법까지 보고 싶으면 다음 문서를 이어서 읽으면 돼.
 
-## 저장소 지도
+6. [전체 실험 설명서](플라스크-경쟁사-비교-실험서.md)
+7. [전체 진행 계획](문서/00-전체-진행계획.md)
+8. [Flask를 고른 이유](문서/01-플라스크를-선택한-이유.md)
+9. [두 제품의 공식 주장](문서/02-경쟁사-공식주장.md)
+10. [점수를 정한 방법](문서/03-평가와-판정기준.md)
+
+## 시험 PR
+
+| 시험 | CodeRabbit | Qodo | 결과 |
+|---|---:|---:|---|
+| P01 | [#6](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6) | [#6174](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6174) | 둘 다 찾음 |
+| P02 | [#7](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/7) | [#6175](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6175) | 둘 다 핵심 문제를 못 찾음 |
+| P03 | [#8](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/8) | [#6176](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6176) | 둘 다 찾음 |
+| P04 | [#9](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/9) | [#6177](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6177) | 둘 다 찾음 |
+| C01 | [#10](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/10) | [#6178](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6178) | 둘 다 잘못된 경고 없음 |
+| C02 | [#11](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/11) | [#6179](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6179) | 둘 다 잘못된 경고 없음 |
+
+각 줄의 두 PR에는 똑같은 코드 변경이 들어 있어.
+
+## 저장소 안의 폴더
 
 ```text
 src/
-= 실험에 사용하는 Flask 실제 코드
-
-tests/
-= 제품도 볼 수 있는 Flask 공개 테스트
-
-.benchmark-private/
-= 제품에게 보여주면 안 되는 정답과 숨은 테스트
-
-benchmark/
-= 원본 Git 이력, 이슈, PR, 댓글, 보안 자료
-
-문서/
-= 실험을 같은 방식으로 반복하기 위한 규칙
-
-실험-케이스/
-= 제품에게 공개해도 되는 중립적인 시험 요구사항
-
-실험-결과/
-= 제품별 리뷰 원문, 시간, 판정 기록
++= Flask 실제 코드
++
++tests/
++= 두 제품도 볼 수 있는 기존 테스트
++
++.benchmark-private/
++= 리뷰가 끝나기 전까지 제품에 보여주지 않은 정답
++
++benchmark/
++= Flask의 과거 이슈·PR 자료와 실행 기록
++
++실험-케이스/
++= P01~P04와 C01~C02 설명
++
++실험-결과/
++= Qodo와 CodeRabbit의 실제 결과
 ```
 
-## 실행한 파일럿 PR
+## 아직 하지 않은 것
 
-각 행의 두 PR은 base SHA, head SHA, diff가 완전히 같아. 자동 리뷰는 껐고 해당 제품만 수동으로 호출했어.
-
-| 구분 | CodeRabbit 전용 | Qodo 전용 | 1차 결과 |
-|---|---:|---:|---|
-| 결함 P01 | [#6](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6) | [#6174](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6174) | 둘 다 정확히 탐지 |
-| 결함 P02 | [#7](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/7) | [#6175](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6175) | 둘 다 주 결함 놓침, 같은 부수 결함 탐지 |
-| 결함 P03 | [#8](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/8) | [#6176](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6176) | 둘 다 정확히 탐지 |
-| 결함 P04 | [#9](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/9) | [#6177](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6177) | 둘 다 주 결함 탐지, Qodo가 추가 회귀도 탐지 |
-| 정상 C01 | [#10](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/10) | [#6178](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6178) | 둘 다 오탐 없음 |
-| 정상 C02 | [#11](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/11) | [#6179](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6179) | 둘 다 오탐 없음 |
-
-원본 링크, 판정 근거, 시간과 수정 제안 실행 결과는 [한눈에 보는 비교표](04-한눈에-보는-비교표.md)와 제품별 결과 문서에 있어.
-
-## 실험 전에 지켜야 할 것
-
-- `.benchmark-private/`의 내용을 리뷰 제품이 읽는 브랜치에 올리지 않는다.
-- Qodo가 남긴 댓글을 CodeRabbit이 보거나 그 반대가 되지 않게 제품별 쌍둥이 PR을 쓴다.
-- 실행 전에 버전, 요금제, 권한, 설정 파일 SHA를 기록한다.
-- 결과를 본 뒤 판정 기준을 바꾸지 않는다.
-- 댓글 개수가 아니라 정확한 원인·발생 조건·결과를 찾았는지 본다.
+- P02의 두 문제를 하나씩 나눠 다시 시험하기
+- P04에서 추가로 발견한 문제를 별도 PR로 다시 시험하기
+- 제품 이름을 가리고 다른 사람이 점수를 다시 확인하기
 
 딱 기억해.
 
-**Flask 버그가 시험 문제고, 숨은 테스트가 정답지며, 두 제품의 공통 실패가 우리가 만들 기능의 출발점이야.**
+**둘 다 버그 세 개를 찾았고 P02는 함께 놓쳤으며, 제품이 준 수정 코드는 우리가 직접 테스트해야 믿을 수 있었어.**
