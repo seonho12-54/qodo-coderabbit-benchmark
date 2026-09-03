@@ -951,10 +951,7 @@ def test_nesting_url_prefixes(
 
 
 def test_nesting_subdomains(app, client) -> None:
-    app.subdomain_matching = True
-    app.config["SERVER_NAME"] = "example.test"
-    client.allow_subdomain_redirects = True
-
+    subdomain = "api"
     parent = flask.Blueprint("parent", __name__)
     child = flask.Blueprint("child", __name__)
 
@@ -963,31 +960,42 @@ def test_nesting_subdomains(app, client) -> None:
         return "child"
 
     parent.register_blueprint(child)
-    app.register_blueprint(parent, subdomain="api")
+    app.register_blueprint(parent, subdomain=subdomain)
 
-    response = client.get("/child/", base_url="http://api.example.test")
+    client.allow_subdomain_redirects = True
+
+    domain_name = "domain.tld"
+    app.config["SERVER_NAME"] = domain_name
+    response = client.get("/child/", base_url="http://api." + domain_name)
+
     assert response.status_code == 200
 
 
 def test_child_and_parent_subdomain(app, client) -> None:
-    app.subdomain_matching = True
-    app.config["SERVER_NAME"] = "example.test"
-    client.allow_subdomain_redirects = True
-
+    child_subdomain = "api"
+    parent_subdomain = "parent"
     parent = flask.Blueprint("parent", __name__)
-    child = flask.Blueprint("child", __name__, subdomain="api")
+    child = flask.Blueprint("child", __name__, subdomain=child_subdomain)
 
     @child.route("/")
     def index():
         return "child"
 
     parent.register_blueprint(child)
-    app.register_blueprint(parent, subdomain="parent")
+    app.register_blueprint(parent, subdomain=parent_subdomain)
 
-    response = client.get("/", base_url="http://api.parent.example.test")
+    client.allow_subdomain_redirects = True
+
+    domain_name = "domain.tld"
+    app.config["SERVER_NAME"] = domain_name
+    response = client.get(
+        "/", base_url=f"http://{child_subdomain}.{parent_subdomain}.{domain_name}"
+    )
+
     assert response.status_code == 200
 
-    response = client.get("/", base_url="http://parent.example.test")
+    response = client.get("/", base_url=f"http://{parent_subdomain}.{domain_name}")
+
     assert response.status_code == 404
 
 
