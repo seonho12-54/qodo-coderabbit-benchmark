@@ -45,10 +45,12 @@ Qodo와 CodeRabbit을 같은 조건으로 실행
 | closed PR 2,897개 메타데이터 아카이브 | 완료 |
 | 실제 closed PR 객체 복원 | 500개에서 의도적으로 중단 |
 | 결함 PR 4개와 정상 대조군 PR 2개 | 완료 |
-| Qodo 리뷰 실행 | 대기 |
-| CodeRabbit 리뷰 실행 | 대기 |
-| 블라인드 판정 | 대기 |
-| 공통 허점 기반 기능 확정 | 대기 |
+| 제품별 쌍둥이 PR 12개 준비 | 완료 |
+| Qodo 1차 리뷰 6개 실행 | 완료 |
+| CodeRabbit 1차 리뷰 6개 실행 | 완료 |
+| 실행 기반 1차 판정 | 완료 |
+| 독립 판정자 블라인드 재판정 | 대기 |
+| 공통 허점 변형 재시험 | 대기 |
 
 전체 closed PR의 원문 데이터는 이미 `benchmark/`에 있어. GitHub의 Pull Requests 탭에는 사용자가 정한 범위인 500개만 실제 PR 객체로 복원했어.
 
@@ -58,11 +60,13 @@ Qodo와 CodeRabbit을 같은 조건으로 실행
 2. [Flask를 선택한 이유](문서/01-플라스크를-선택한-이유.md)
 3. [Qodo·CodeRabbit의 공식 주장](문서/02-경쟁사-공식주장.md)
 4. [평가와 판정 기준](문서/03-평가와-판정기준.md)
-5. [케이스 001](실험-케이스/케이스-001.md), [케이스 002](실험-케이스/케이스-002.md)
-6. [Qodo 결과](실험-결과/Qodo-결과.md), [CodeRabbit 결과](실험-결과/CodeRabbit-결과.md)
-7. [한눈에 보는 비교표](04-한눈에-보는-비교표.md)
-8. [두 제품이 놓친 문제](05-두제품이-놓친-문제.md)
-9. [우리가 만들어야 할 기능](06-우리가-만들어야할-기능.md)
+5. 결함 케이스: [P01](실험-케이스/케이스-001.md), [P02](실험-케이스/케이스-002.md), [P03](실험-케이스/케이스-003.md), [P04](실험-케이스/케이스-004.md)
+6. 정상 대조군: [C01](실험-케이스/대조군-001.md), [C02](실험-케이스/대조군-002.md)
+7. [공개한 정답 테스트와 실행 기록](benchmark/oracles/pilot-2026-09-03/README.md)
+8. [Qodo 결과](실험-결과/Qodo-결과.md), [CodeRabbit 결과](실험-결과/CodeRabbit-결과.md)
+9. [한눈에 보는 비교표](04-한눈에-보는-비교표.md)
+10. [두 제품이 놓친 문제](05-두제품이-놓친-문제.md)
+11. [우리가 만들어야 할 기능](06-우리가-만들어야할-기능.md)
 
 한 장으로 먼저 보고 싶으면 [전체 실험 설명서](플라스크-경쟁사-비교-실험서.md)를 읽으면 돼.
 
@@ -91,16 +95,20 @@ benchmark/
 = 제품별 리뷰 원문, 시간, 판정 기록
 ```
 
-## 이미 준비된 파일럿 PR
+## 실행한 파일럿 PR
 
-| 구분 | PR | 목적 |
-|---|---:|---|
-| 결함 P01 | [#6](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6) | 실제 버그 탐지 |
-| 결함 P02 | [#7](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/7) | 실제 버그 탐지 |
-| 결함 P03 | [#8](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/8) | 실제 버그 탐지 |
-| 결함 P04 | [#9](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/9) | 실제 버그 탐지 |
-| 정상 C01 | [#10](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/10) | 오탐 확인 |
-| 정상 C02 | [#11](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/11) | 오탐 확인 |
+각 행의 두 PR은 base SHA, head SHA, diff가 완전히 같아. 자동 리뷰는 껐고 해당 제품만 수동으로 호출했어.
+
+| 구분 | CodeRabbit 전용 | Qodo 전용 | 1차 결과 |
+|---|---:|---:|---|
+| 결함 P01 | [#6](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6) | [#6174](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6174) | 둘 다 정확히 탐지 |
+| 결함 P02 | [#7](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/7) | [#6175](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6175) | 둘 다 주 결함 놓침, 같은 부수 결함 탐지 |
+| 결함 P03 | [#8](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/8) | [#6176](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6176) | 둘 다 정확히 탐지 |
+| 결함 P04 | [#9](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/9) | [#6177](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6177) | 둘 다 주 결함 탐지, Qodo가 추가 회귀도 탐지 |
+| 정상 C01 | [#10](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/10) | [#6178](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6178) | 둘 다 오탐 없음 |
+| 정상 C02 | [#11](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/11) | [#6179](https://github.com/seonho12-54/qodo-coderabbit-benchmark/pull/6179) | 둘 다 오탐 없음 |
+
+원본 링크, 판정 근거, 시간과 수정 제안 실행 결과는 [한눈에 보는 비교표](04-한눈에-보는-비교표.md)와 제품별 결과 문서에 있어.
 
 ## 실험 전에 지켜야 할 것
 
