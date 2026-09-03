@@ -544,7 +544,7 @@ class App(Scaffold):
         """
         if filename is None:
             return True
-        return filename.lower().endswith((".html", ".htm", ".xml", ".xhtml", ".svg"))
+        return filename.casefold().endswith((".html", ".htm", ".xml", ".xhtml", ".svg"))
 
     @property
     def debug(self) -> bool:
