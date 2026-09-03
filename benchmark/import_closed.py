@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import concurrent.futures
 import gzip
 import json
 import re
@@ -177,7 +178,7 @@ def pr_payload(
     }
 
 
-def run(kind: str, pause: float) -> None:
+def run(kind: str, pause: float, workers: int) -> None:
     token = subprocess.check_output(["gh", "auth", "token"], text=True).strip()
     issue_comments = grouped_comments(archive_rows("issue-comments.jsonl"), "issue_url")
     review_comments = grouped_comments(
@@ -226,9 +227,16 @@ def run(kind: str, pause: float) -> None:
     jobs = [job for job in jobs if (job[0], job[1]) not in submitted]
     print(f"queued={len(jobs)} already_imported_or_submitted={len(submitted)}", flush=True)
 
-    with STATE.open("a") as state:
-        for index, (job_kind, number, payload) in enumerate(jobs, 1):
-            result = submit(token, payload)
+    def import_one(job: tuple[str, int, dict]) -> tuple[str, int, dict]:
+        job_kind, number, payload = job
+        result = submit(token, payload)
+        time.sleep(pause)
+        return job_kind, number, result
+
+    with STATE.open("a") as state, concurrent.futures.ThreadPoolExecutor(
+        max_workers=workers
+    ) as pool:
+        for index, (job_kind, number, result) in enumerate(pool.map(import_one, jobs), 1):
             state.write(
                 json.dumps(
                     {
@@ -243,7 +251,6 @@ def run(kind: str, pause: float) -> None:
             state.flush()
             if index % 25 == 0 or index == len(jobs):
                 print(f"submitted={index}/{len(jobs)} last={job_kind}#{number}", flush=True)
-            time.sleep(pause)
 
 
 def self_test() -> None:
@@ -256,7 +263,8 @@ def self_test() -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--kind", choices=("issues", "prs", "all"), default="all")
-    parser.add_argument("--pause", type=float, default=0.1)
+    parser.add_argument("--pause", type=float, default=0.2)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
-    self_test() if args.self_test else run(args.kind, args.pause)
+    self_test() if args.self_test else run(args.kind, args.pause, args.workers)
