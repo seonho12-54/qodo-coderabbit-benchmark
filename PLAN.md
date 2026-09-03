@@ -280,7 +280,7 @@ tar -xzf benchmark/flask-github-metadata-2026-09-03.tar.gz -C flask-metadata
 - [x] 최신 코드에서 의미상 동등한 변형 4건 제작
 - [x] 정상 대조군 2건 제작
 - [x] `benchmark-base`에서 전체 공개 테스트 통과 확인
-- [ ] 6개 PR을 draft로 열고 diff 크기·테스트 상태 검수
+- [x] 6개 PR을 draft로 열고 diff 크기·테스트 상태 검수
 
 ### Phase 2 — 블라인드 리뷰
 
