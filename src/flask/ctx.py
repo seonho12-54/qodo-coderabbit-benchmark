@@ -498,10 +498,10 @@ class AppContext:
         _cv_app.reset(self._cv_token)
         self._cv_token = None
 
+        collect_errors.raise_any("Errors during context teardown")
+
         with collect_errors:
             appcontext_popped.send(self.app, _async_wrapper=self.app.ensure_sync)
-
-        collect_errors.raise_any("Errors during context teardown")
 
     def __enter__(self) -> te.Self:
         self.push()
