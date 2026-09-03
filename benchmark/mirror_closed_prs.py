@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import gzip
 import json
 import subprocess
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -18,6 +20,7 @@ SOURCE = ROOT / "benchmark/flask-closed-pull-requests-2026-09-03.jsonl.gz"
 STATE = ROOT / ".benchmark-private/pr-mirror-state.jsonl"
 REPOSITORY = "seonho12-54/qodo-coderabbit-benchmark"
 OWNER = REPOSITORY.split("/", 1)[0]
+STATE_LOCK = threading.Lock()
 
 
 def clean(text: str | None, limit: int = 60_000) -> str:
@@ -98,7 +101,7 @@ def load_state() -> dict[int, dict]:
 
 def append_state(record: dict) -> None:
     STATE.parent.mkdir(exist_ok=True)
-    with STATE.open("a") as stream:
+    with STATE_LOCK, STATE.open("a") as stream:
         stream.write(json.dumps(record) + "\n")
 
 
@@ -122,7 +125,9 @@ def push_refs(items: list[dict], batch_size: int) -> None:
         print(f"refs={min(start + len(batch), len(items))}/{len(items)}", flush=True)
 
 
-def run(limit: int | None, pause: float, batch_size: int, skip_push: bool) -> None:
+def run(
+    limit: int | None, pause: float, batch_size: int, skip_push: bool, workers: int
+) -> None:
     token = subprocess.check_output(["gh", "auth", "token"], text=True).strip()
     state = load_state()
     pending = [row for row in rows() if state.get(row["number"], {}).get("stage") != "closed"]
@@ -133,7 +138,7 @@ def run(limit: int | None, pause: float, batch_size: int, skip_push: bool) -> No
     if not skip_push:
         push_refs([row for row in pending if row["number"] not in state], batch_size)
 
-    for index, row in enumerate(pending, 1):
+    def mirror(row: dict) -> tuple[int, int]:
         number = row["number"]
         saved = state.get(number)
         target = saved.get("target_number") if saved else None
@@ -162,10 +167,23 @@ def run(limit: int | None, pause: float, batch_size: int, skip_push: bool) -> No
         api(token, "PATCH", f"pulls/{target}", {"state": "closed"})
         saved = {"source_number": number, "target_number": target, "stage": "closed"}
         append_state(saved)
-        state[number] = saved
         time.sleep(pause)
-        if index % 25 == 0 or index == len(pending):
-            print(f"closed={index}/{len(pending)} source=#{number} target=#{target}", flush=True)
+        return number, target
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        completed = concurrent.futures.as_completed(pool.submit(mirror, row) for row in pending)
+        for index, future in enumerate(completed, 1):
+            number, target = future.result()
+            state[number] = {
+                "source_number": number,
+                "target_number": target,
+                "stage": "closed",
+            }
+            if index % 25 == 0 or index == len(pending):
+                print(
+                    f"closed={index}/{len(pending)} source=#{number} target=#{target}",
+                    flush=True,
+                )
 
 
 def self_test() -> None:
@@ -191,10 +209,11 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int)
     parser.add_argument("--pause", type=float, default=1.05)
     parser.add_argument("--batch-size", type=int, default=40)
+    parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--skip-push", action="store_true")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
         self_test()
     else:
-        run(args.limit, args.pause, args.batch_size, args.skip_push)
+        run(args.limit, args.pause, args.batch_size, args.skip_push, args.workers)
