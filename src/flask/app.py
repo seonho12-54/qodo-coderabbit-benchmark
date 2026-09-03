@@ -723,8 +723,7 @@ class Flask(App):
 
         if server_name:
             server_url = urlsplit(f"//{server_name}")
-            sn_host = server_url.hostname
-            sn_port = server_url.port
+            sn_host, sn_port = server_url.hostname, server_url.port
 
         if not host:
             if sn_host:
