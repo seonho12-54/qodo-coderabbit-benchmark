@@ -79,7 +79,7 @@ source = ["src", "*/site-packages"]
 
 [tool.mypy]
 python_version = "3.9"
-files = ["src/flask", "tests/type_check"]
+files = ["src/flask", "tests/typing"]
 show_error_codes = true
 pretty = true
 strict = true
@@ -95,7 +95,7 @@ ignore_missing_imports = true
 
 [tool.pyright]
 pythonVersion = "3.9"
-include = ["src/flask", "tests/type_check"]
+include = ["src/flask", "tests/typing"]
 typeCheckingMode = "basic"
 
 [tool.ruff]
