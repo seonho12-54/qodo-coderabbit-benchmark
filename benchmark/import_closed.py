@@ -105,7 +105,10 @@ def submit(token: str, payload: dict) -> dict:
         except urllib.error.HTTPError as error:
             if error.code not in {403, 429, 500, 502, 503, 504}:
                 raise RuntimeError(error.read().decode()) from error
-            time.sleep(min(int(error.headers.get("Retry-After", delay)), 60))
+            wait = min(int(error.headers.get("Retry-After", delay)), 60)
+            message = error.read().decode()[:300].replace("\n", " ")
+            print(f"retry status={error.code} wait={wait}s body={message}", flush=True)
+            time.sleep(wait)
             delay = min(delay * 2, 60)
 
 
