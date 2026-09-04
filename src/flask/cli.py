@@ -952,7 +952,7 @@ def run_command(
     option.
     """
     try:
-        app: WSGIApplication = info.load_app()  # pyright: ignore
+        app: WSGIApplication = info.load_app()  # pyright: ignore[reportRedeclaration]
     except Exception as e:
         if is_running_from_reloader():
             # When reloading, print out the error immediately, but raise

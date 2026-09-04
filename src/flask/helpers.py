@@ -617,7 +617,9 @@ def get_root_path(import_name: str) -> str:
         return os.getcwd()
 
     if hasattr(loader, "get_filename"):
-        filepath = loader.get_filename(import_name)  # pyright: ignore
+        filepath = loader.get_filename(  # pyright: ignore[reportAttributeAccessIssue]
+            import_name
+        )
     else:
         # Fall back to imports.
         __import__(import_name)
