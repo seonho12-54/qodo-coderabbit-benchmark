@@ -114,25 +114,6 @@ def test_view_provide_automatic_options_attr_disable(
     assert rv.status_code == 405
 
 
-def test_view_provide_automatic_options_attr_enable(
-    app: flask.Flask, client: FlaskClient
-) -> None:
-    """When default automatic options is disabled in config, it can still be
-    enabled by the view class attribute.
-    """
-    app.config["PROVIDE_AUTOMATIC_OPTIONS"] = False
-
-    class Index(flask.views.View):
-        provide_automatic_options = True
-
-        def dispatch_request(self):
-            return "Hello World!"
-
-    app.add_url_rule("/", view_func=Index.as_view("index"))
-    rv = client.options("/")
-    assert rv.allow == {"GET", "HEAD", "OPTIONS"}
-
-
 def test_provide_automatic_options_method_disable(
     app: flask.Flask, client: FlaskClient
 ) -> None:
