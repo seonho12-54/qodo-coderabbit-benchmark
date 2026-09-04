@@ -616,7 +616,7 @@ class Blueprint(Scaffold):
         by the blueprint. Equivalent to :meth:`.Flask.before_request`.
         """
         self.record_once(
-            lambda s: s.app.before_request_funcs.setdefault(None, []).append(f)
+            lambda s: s.app.before_request_funcs[None].append(f)
         )
         return f
 
@@ -626,7 +626,7 @@ class Blueprint(Scaffold):
         by the blueprint. Equivalent to :meth:`.Flask.after_request`.
         """
         self.record_once(
-            lambda s: s.app.after_request_funcs.setdefault(None, []).append(f)
+            lambda s: s.app.after_request_funcs[None].append(f)
         )
         return f
 
@@ -636,7 +636,7 @@ class Blueprint(Scaffold):
         handled by the blueprint. Equivalent to :meth:`.Flask.teardown_request`.
         """
         self.record_once(
-            lambda s: s.app.teardown_request_funcs.setdefault(None, []).append(f)
+            lambda s: s.app.teardown_request_funcs[None].append(f)
         )
         return f
 
@@ -648,7 +648,7 @@ class Blueprint(Scaffold):
         only by the blueprint. Equivalent to :meth:`.Flask.context_processor`.
         """
         self.record_once(
-            lambda s: s.app.template_context_processors.setdefault(None, []).append(f)
+            lambda s: s.app.template_context_processors[None].append(f)
         )
         return f
 
@@ -677,7 +677,7 @@ class Blueprint(Scaffold):
         handled by the blueprint. Equivalent to :meth:`.Flask.url_value_preprocessor`.
         """
         self.record_once(
-            lambda s: s.app.url_value_preprocessors.setdefault(None, []).append(f)
+            lambda s: s.app.url_value_preprocessors[None].append(f)
         )
         return f
 
@@ -687,6 +687,6 @@ class Blueprint(Scaffold):
         the blueprint. Equivalent to :meth:`.Flask.url_defaults`.
         """
         self.record_once(
-            lambda s: s.app.url_default_functions.setdefault(None, []).append(f)
+            lambda s: s.app.url_default_functions[None].append(f)
         )
         return f
