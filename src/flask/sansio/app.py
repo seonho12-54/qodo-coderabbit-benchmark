@@ -945,9 +945,6 @@ class App(Scaffold):
         :param location: The URL to redirect to.
         :param code: The status code for the redirect.
 
-        .. versionchanged:: 3.2
-            ``code`` defaults to ``303`` instead of ``302``.
-
         .. versionadded:: 2.2
             Moved from ``flask.redirect``, which calls this method.
         """

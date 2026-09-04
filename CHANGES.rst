@@ -19,11 +19,6 @@ Unreleased
     teardown handlers instead. :issue:`5816`
 -   ``template_filter``, ``template_test``, and ``template_global`` decorators
     can be used without parentheses. :issue:`5729`
--   ``redirect`` returns a ``303`` status code by default instead of ``302``.
-    This tells the client to always switch to ``GET``, rather than only
-    switching ``POST`` to ``GET``. This preserves the current behavior of
-    ``GET`` and ``POST`` redirects, and is also correct for frontend libraries
-    such as HTMX. :issue:`5895`
 -   ``provide_automatic_options=True`` can be used to enable it for a view when
     it's disabled in config. Previously, only disabling worked. :issue:`5916`
 -   ``Flask.select_jinja_autoescape`` uses case-insensitive comparison instead

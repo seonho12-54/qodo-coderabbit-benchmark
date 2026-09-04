@@ -265,9 +265,6 @@ def redirect(
     :param Response: The response class to use. Not used when
         ``current_app`` is active, which uses ``app.response_class``.
 
-    .. versionchanged:: 3.2
-        ``code`` defaults to ``303`` instead of ``302``.
-
     .. versionadded:: 2.2
         Calls ``current_app.redirect`` if available instead of always
         using Werkzeug's default ``redirect``.
