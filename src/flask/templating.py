@@ -123,13 +123,9 @@ class DispatchingJinjaLoader(BaseLoader):
 def _render(ctx: AppContext, template: Template, context: dict[str, t.Any]) -> str:
     app = ctx.app
     app.update_template_context(ctx, context)
-    before_render_template.send(
-        app, _async_wrapper=app.ensure_sync, template=template, context=context
-    )
+    before_render_template.send(app, template=template, context=context)
     rv = template.render(context)
-    template_rendered.send(
-        app, _async_wrapper=app.ensure_sync, template=template, context=context
-    )
+    template_rendered.send(app, template=template, context=context)
     return rv
 
 
@@ -165,15 +161,11 @@ def _stream(
 ) -> t.Iterator[str]:
     app = ctx.app
     app.update_template_context(ctx, context)
-    before_render_template.send(
-        app, _async_wrapper=app.ensure_sync, template=template, context=context
-    )
+    before_render_template.send(app, template=template, context=context)
 
     def generate() -> t.Iterator[str]:
         yield from template.generate(context)
-        template_rendered.send(
-            app, _async_wrapper=app.ensure_sync, template=template, context=context
-        )
+        template_rendered.send(app, template=template, context=context)
 
     return stream_with_context(generate())
 
