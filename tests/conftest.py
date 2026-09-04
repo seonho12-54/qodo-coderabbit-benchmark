@@ -18,6 +18,11 @@ def _standard_os_environ(monkeypatch):
         "FLASK_DEBUG",
         "FLASK_RUN_FROM_CLI",
         "WERKZEUG_RUN_MAIN",
+        "FOO",
+        "BAR",
+        "SPAM",
+        "HAM",
+        "EGGS",
     ):
         monkeypatch.delenv(key, False)
 
