@@ -12,7 +12,6 @@ from inspect import iscoroutinefunction
 from itertools import chain
 from types import TracebackType
 from urllib.parse import quote as _url_quote
-from urllib.parse import urlsplit
 
 import click
 from werkzeug.datastructures import Headers
@@ -76,6 +75,11 @@ def _make_timedelta(value: timedelta | int | None) -> timedelta | None:
         return value
 
     return timedelta(seconds=value)
+
+
+def _split_server_name(value: str) -> tuple[str, int | None]:
+    host, _, port = value.partition(":")
+    return host, int(port) if port else None
 
 
 F = t.TypeVar("F", bound=t.Callable[..., t.Any])
@@ -722,9 +726,7 @@ class Flask(App):
         sn_host = sn_port = None
 
         if server_name:
-            server_url = urlsplit(f"//{server_name}")
-            sn_host = server_url.hostname
-            sn_port = server_url.port
+            sn_host, sn_port = _split_server_name(server_name)
 
         if not host:
             if sn_host:
