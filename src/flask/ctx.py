@@ -431,7 +431,7 @@ class AppContext:
             return
 
         self._cv_token = _cv_app.set(self)
-        appcontext_pushed.send(self.app, _async_wrapper=self.app.ensure_sync)
+        appcontext_pushed.send(self.app)
 
         if self._request is not None:
             # Open the session at the moment that the request context is available.
@@ -499,7 +499,7 @@ class AppContext:
         self._cv_token = None
 
         with collect_errors:
-            appcontext_popped.send(self.app, _async_wrapper=self.app.ensure_sync)
+            appcontext_popped.send(self.app)
 
         collect_errors.raise_any("Errors during context teardown")
 
