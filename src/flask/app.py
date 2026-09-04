@@ -601,11 +601,9 @@ class Flask(App):
         :param context: the context as a dictionary that is updated in place
                         to add extra variables.
         """
-        names: t.Iterable[str | None] = (None,)
-
-        # A template may be rendered outside a request context.
-        if ctx.has_request:
-            names = chain(names, reversed(ctx.request.blueprints))
+        names: t.Iterable[str | None] = (
+            self._request_callback_scopes(ctx) if ctx.has_request else (None,)
+        )
 
         # The values passed to render_template take precedence. Keep a
         # copy to re-apply after all context functions.
@@ -1377,7 +1375,7 @@ class Flask(App):
         further request handling is stopped.
         """
         req = ctx.request
-        names = (None, *reversed(req.blueprints))
+        names = self._request_callback_scopes(ctx)
 
         for name in names:
             if name in self.url_value_preprocessors:
@@ -1626,3 +1624,6 @@ class Flask(App):
         wrapped to apply middleware.
         """
         return self.wsgi_app(environ, start_response)
+    @staticmethod
+    def _request_callback_scopes(ctx: AppContext) -> tuple[str | None, ...]:
+        return (None, *ctx.request.blueprints)
