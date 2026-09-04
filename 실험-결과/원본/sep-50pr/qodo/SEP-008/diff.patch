@@ -1,0 +1,26 @@
+diff --git a/src/flask/helpers.py b/src/flask/helpers.py
+index f03d073c..7fdc040a 100644
+--- a/src/flask/helpers.py
++++ b/src/flask/helpers.py
+@@ -252,7 +252,7 @@ def url_for(
+ 
+ 
+ def redirect(
+-    location: str, code: int = 303, Response: type[BaseResponse] | None = None
++    location: str, code: int = 302, Response: type[BaseResponse] | None = None
+ ) -> BaseResponse:
+     """Create a redirect response object.
+ 
+diff --git a/src/flask/sansio/app.py b/src/flask/sansio/app.py
+index 86eccbfa..fa2b4e5a 100644
+--- a/src/flask/sansio/app.py
++++ b/src/flask/sansio/app.py
+@@ -936,7 +936,7 @@ def trap_http_exception(self, e: Exception) -> bool:
+     .. versionadded:: 0.10
+     """
+ 
+-    def redirect(self, location: str, code: int = 303) -> BaseResponse:
++    def redirect(self, location: str, code: int = 302) -> BaseResponse:
+         """Create a redirect response object.
+ 
+         This is called by :func:`flask.redirect`, and can be called

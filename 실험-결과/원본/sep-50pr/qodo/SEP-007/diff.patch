@@ -1,0 +1,35 @@
+diff --git a/src/flask/app.py b/src/flask/app.py
+index 620358695..afa2c1e9b 100644
+--- a/src/flask/app.py
++++ b/src/flask/app.py
+@@ -605,7 +605,7 @@ def update_template_context(
+ 
+         # A template may be rendered outside a request context.
+         if ctx.has_request:
+-            names = chain(names, reversed(ctx.request.blueprints))
++            names = chain(names, ctx.request.blueprints)
+ 
+         # The values passed to render_template take precedence. Keep a
+         # copy to re-apply after all context functions.
+@@ -1377,7 +1377,7 @@ def preprocess_request(self, ctx: AppContext) -> ft.ResponseReturnValue | None:
+         further request handling is stopped.
+         """
+         req = ctx.request
+-        names = (None, *reversed(req.blueprints))
++        names = (None, *req.blueprints)
+ 
+         for name in names:
+             if name in self.url_value_preprocessors:
+diff --git a/src/flask/sansio/app.py b/src/flask/sansio/app.py
+index 74c5b3232..217966d84 100644
+--- a/src/flask/sansio/app.py
++++ b/src/flask/sansio/app.py
+@@ -970,7 +970,7 @@ def inject_url_defaults(self, endpoint: str, values: dict[str, t.Any]) -> None:
+         # passed endpoint instead of using request.blueprints.
+         if "." in endpoint:
+             names = chain(
+-                names, reversed(_split_blueprint_path(endpoint.rpartition(".")[0]))
++                names, _split_blueprint_path(endpoint.rpartition(".")[0])
+             )
+ 
+         for name in names:

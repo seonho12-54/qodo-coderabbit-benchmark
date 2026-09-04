@@ -1,0 +1,13 @@
+diff --git a/src/flask/wrappers.py b/src/flask/wrappers.py
+index bab610291..7d4411e4a 100644
+--- a/src/flask/wrappers.py
++++ b/src/flask/wrappers.py
+@@ -237,7 +237,7 @@ class Response(ResponseBase):
+         Added :attr:`max_cookie_size`.
+     """
+ 
+-    default_mimetype: str | None = "text/html"
++    default_mimetype = "text/html"
+ 
+     json_module = json
+ 

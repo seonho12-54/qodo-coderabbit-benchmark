@@ -1,0 +1,95 @@
+diff --git a/src/flask/app.py b/src/flask/app.py
+index 620358695..bc19c2a4f 100644
+--- a/src/flask/app.py
++++ b/src/flask/app.py
+@@ -441,7 +441,7 @@ def open_resource(
+         path = os.path.join(self.root_path, resource)
+ 
+         if mode == "rb":
+-            return open(path, mode)  # pyright: ignore
++            return open(path, mode)  # pyright: ignore[reportReturnType]
+ 
+         return open(path, mode, encoding=encoding)
+ 
+@@ -532,7 +532,9 @@ def create_url_adapter(self, request: Request | None) -> MapAdapter | None:
+                 request.trusted_hosts = trusted_hosts
+ 
+             # Check trusted_hosts here until bind_to_environ does.
+-            request.host = get_host(request.environ, request.trusted_hosts)  # pyright: ignore
++            request.host = get_host(  # pyright: ignore[reportAttributeAccessIssue]
++                request.environ, request.trusted_hosts
++            )
+             subdomain = None
+             server_name = self.config["SERVER_NAME"]
+ 
+@@ -1294,7 +1296,7 @@ def make_response(self, rv: ft.ResponseReturnValue) -> Response:
+             # decide if a 2-tuple has status or headers
+             elif len_rv == 2:
+                 if isinstance(rv[1], (Headers, dict, tuple, list)):
+-                    rv, headers = rv  # pyright: ignore
++                    rv, headers = rv  # pyright: ignore[reportAssignmentType]
+                 else:
+                     rv, status = rv  # type: ignore[assignment,misc]
+             # other sized tuples are not allowed
+@@ -1320,7 +1322,7 @@ def make_response(self, rv: ft.ResponseReturnValue) -> Response:
+                 # waiting to do it manually, so that the class can handle any
+                 # special logic
+                 rv = self.response_class(
+-                    rv,  # pyright: ignore
++                    rv,  # pyright: ignore[reportArgumentType]
+                     status=status,
+                     headers=headers,  # type: ignore[arg-type]
+                 )
+diff --git a/src/flask/blueprints.py b/src/flask/blueprints.py
+index b6d4e4333..bd2449334 100644
+--- a/src/flask/blueprints.py
++++ b/src/flask/blueprints.py
+@@ -123,6 +123,6 @@ def open_resource(
+         path = os.path.join(self.root_path, resource)
+ 
+         if mode == "rb":
+-            return open(path, mode)  # pyright: ignore
++            return open(path, mode)  # pyright: ignore[reportReturnType]
+ 
+         return open(path, mode, encoding=encoding)
+diff --git a/src/flask/cli.py b/src/flask/cli.py
+index 53b4e6752..3a0636572 100644
+--- a/src/flask/cli.py
++++ b/src/flask/cli.py
+@@ -952,7 +952,7 @@ def run_command(
+     option.
+     """
+     try:
+-        app: WSGIApplication = info.load_app()  # pyright: ignore
++        app: WSGIApplication = info.load_app()  # pyright: ignore[reportRedeclaration]
+     except Exception as e:
+         if is_running_from_reloader():
+             # When reloading, print out the error immediately, but raise
+diff --git a/src/flask/helpers.py b/src/flask/helpers.py
+index e479f1814..27e085fdb 100644
+--- a/src/flask/helpers.py
++++ b/src/flask/helpers.py
+@@ -617,7 +617,9 @@ def get_root_path(import_name: str) -> str:
+         return os.getcwd()
+ 
+     if hasattr(loader, "get_filename"):
+-        filepath = loader.get_filename(import_name)  # pyright: ignore
++        filepath = loader.get_filename(  # pyright: ignore[reportAttributeAccessIssue]
++            import_name
++        )
+     else:
+         # Fall back to imports.
+         __import__(import_name)
+diff --git a/src/flask/views.py b/src/flask/views.py
+index c8ea7ab42..109c24774 100644
+--- a/src/flask/views.py
++++ b/src/flask/views.py
+@@ -110,7 +110,7 @@ def view(**kwargs: t.Any) -> ft.ResponseReturnValue:
+                 return current_app.ensure_sync(self.dispatch_request)(**kwargs)  # type: ignore[no-any-return]
+ 
+         else:
+-            self = cls(*class_args, **class_kwargs)  # pyright: ignore
++            self = cls(*class_args, **class_kwargs)
+ 
+             def view(**kwargs: t.Any) -> ft.ResponseReturnValue:
+                 return current_app.ensure_sync(self.dispatch_request)(**kwargs)  # type: ignore[no-any-return]

@@ -1,0 +1,14 @@
+{
+  "pr": 6204,
+  "head_sha": "2ceb4fb3ac91432a2c43cdcd28d9b61d37244a4a",
+  "diff_sha256": "fbac7bdd6aa8afcb20c451ad29efe1808b495d1f37aa6dbbbcf375db440f31f8",
+  "collected_files": [
+    "check-runs.json",
+    "diff.patch",
+    "issue-comments.json",
+    "pr.json",
+    "review-comments.json",
+    "reviews.json",
+    "workflow-runs.json"
+  ]
+}

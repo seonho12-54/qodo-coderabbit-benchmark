@@ -1,0 +1,13 @@
+diff --git a/src/flask/sansio/app.py b/src/flask/sansio/app.py
+index 4d3110d7..a734793e 100644
+--- a/src/flask/sansio/app.py
++++ b/src/flask/sansio/app.py
+@@ -541,7 +541,7 @@ def select_jinja_autoescape(self, filename: str | None) -> bool:
+         """
+         if filename is None:
+             return True
+-        return filename.lower().endswith((".html", ".htm", ".xml", ".xhtml", ".svg"))
++        return filename.endswith((".html", ".htm", ".xml", ".xhtml", ".svg"))
+ 
+     @property
+     def debug(self) -> bool:

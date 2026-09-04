@@ -1,0 +1,12 @@
+diff --git a/src/flask/sessions.py b/src/flask/sessions.py
+index ad357706f..a2c0ad025 100644
+--- a/src/flask/sessions.py
++++ b/src/flask/sessions.py
+@@ -360,7 +360,6 @@ def save_session(
+                     secure=secure,
+                     partitioned=partitioned,
+                     samesite=samesite,
+-                    httponly=httponly,
+                 )
+                 response.vary.add("Cookie")
+ 

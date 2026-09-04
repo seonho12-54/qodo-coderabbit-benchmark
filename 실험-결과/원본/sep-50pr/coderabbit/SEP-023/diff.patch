@@ -1,0 +1,59 @@
+diff --git a/src/flask/app.py b/src/flask/app.py
+index 620358695..d24e7ce33 100644
+--- a/src/flask/app.py
++++ b/src/flask/app.py
+@@ -12,7 +12,6 @@
+ from itertools import chain
+ from types import TracebackType
+ from urllib.parse import quote as _url_quote
+-from urllib.parse import urlsplit
+ 
+ import click
+ from werkzeug.datastructures import Headers
+@@ -78,6 +77,11 @@ def _make_timedelta(value: timedelta | int | None) -> timedelta | None:
+     return timedelta(seconds=value)
+ 
+ 
++def _split_server_name(value: str) -> tuple[str, int | None]:
++    host, _, port = value.partition(":")
++    return host, int(port) if port else None
++
++
+ F = t.TypeVar("F", bound=t.Callable[..., t.Any])
+ 
+ 
+@@ -722,9 +726,7 @@ def run(
+         sn_host = sn_port = None
+ 
+         if server_name:
+-            server_url = urlsplit(f"//{server_name}")
+-            sn_host = server_url.hostname
+-            sn_port = server_url.port
++            sn_host, sn_port = _split_server_name(server_name)
+ 
+         if not host:
+             if sn_host:
+diff --git a/src/flask/testing.py b/src/flask/testing.py
+index 8d058ca00..beb3695b8 100644
+--- a/src/flask/testing.py
++++ b/src/flask/testing.py
+@@ -122,6 +122,10 @@ class FlaskClient(Client):
+ 
+     application: Flask
+ 
++    @staticmethod
++    def _cookie_host(value: str) -> str:
++        return value.partition(":")[0]
++
+     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
+         super().__init__(*args, **kwargs)
+         self.preserve_context = False
+@@ -177,7 +181,7 @@ def session_transaction(
+             app.session_interface.save_session(app, sess, resp)
+ 
+         self._update_cookies_from_response(
+-            urlsplit(ctx.request.host_url).hostname or "localhost",
++            self._cookie_host(ctx.request.host),
+             ctx.request.path,
+             resp.headers.getlist("Set-Cookie"),
+         )

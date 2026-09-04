@@ -1,0 +1,34 @@
+{
+  "rubric": "location/cause/condition/result, one point each; exact=4, partial=2-3 with correct cause, miss=0-1 or wrong cause",
+  "patch_policy": "Only a directly applicable product-supplied code patch is verified; prose and agent prompts are not patches.",
+  "patches": [
+    {"case": 12, "product": "coderabbit", "applied": true, "oracle_runs_passed": 3, "oracle_runs_total": 3, "public_tests_passed": 494, "public_tests_failed": 0, "verdict": "fully_fixed"}
+  ],
+  "cases": [
+    {"case": 1, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 2, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 3, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 4, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 5, "kind": "control", "qodo": 0, "coderabbit": 0},
+    {"case": 6, "kind": "defect", "qodo": 4, "coderabbit": 0},
+    {"case": 7, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 8, "kind": "defect", "qodo": 0, "coderabbit": 0},
+    {"case": 9, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 10, "kind": "control", "qodo": 0, "coderabbit": 0},
+    {"case": 11, "kind": "defect", "qodo": 4, "coderabbit": 0},
+    {"case": 12, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 13, "kind": "defect", "qodo": 4, "coderabbit": 0},
+    {"case": 14, "kind": "defect", "qodo": 0, "coderabbit": 0},
+    {"case": 15, "kind": "control", "qodo": 0, "coderabbit": 0},
+    {"case": 16, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 17, "kind": "defect", "qodo": 4, "coderabbit": 4},
+    {"case": 18, "kind": "defect", "qodo": 4, "coderabbit": 0},
+    {"case": 19, "kind": "defect", "qodo": 4, "coderabbit": 0},
+    {"case": 20, "kind": "control", "qodo": 0, "coderabbit": 0},
+    {"case": 21, "kind": "repeat", "qodo": 4, "coderabbit": 4},
+    {"case": 22, "kind": "repeat", "qodo": 4, "coderabbit": 0},
+    {"case": 23, "kind": "repeat", "qodo": 4, "coderabbit": 4},
+    {"case": 24, "kind": "repeat", "qodo": 4, "coderabbit": 3},
+    {"case": 25, "kind": "control", "qodo": 0, "coderabbit": 0}
+  ]
+}

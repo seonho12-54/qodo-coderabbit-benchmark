@@ -1,0 +1,117 @@
+diff --git a/src/flask/app.py b/src/flask/app.py
+index 620358695..743741000 100644
+--- a/src/flask/app.py
++++ b/src/flask/app.py
+@@ -1,13 +1,11 @@
+ from __future__ import annotations
+ 
+ import collections.abc as cabc
+-import inspect
+ import os
+ import sys
+ import typing as t
+ import weakref
+ from datetime import timedelta
+-from functools import update_wrapper
+ from inspect import iscoroutinefunction
+ from itertools import chain
+ from types import TracebackType
+@@ -78,35 +76,6 @@ def _make_timedelta(value: timedelta | int | None) -> timedelta | None:
+     return timedelta(seconds=value)
+ 
+ 
+-F = t.TypeVar("F", bound=t.Callable[..., t.Any])
+-
+-
+-# Other methods may call the overridden method with the new ctx arg. Remove it
+-# and call the method with the remaining args.
+-def remove_ctx(f: F) -> F:
+-    def wrapper(self: Flask, *args: t.Any, **kwargs: t.Any) -> t.Any:
+-        if args and isinstance(args[0], AppContext):
+-            args = args[1:]
+-
+-        return f(self, *args, **kwargs)
+-
+-    return update_wrapper(wrapper, f)  # type: ignore[return-value]
+-
+-
+-# The overridden method may call super().base_method without the new ctx arg.
+-# Add it to the args for the call.
+-def add_ctx(f: F) -> F:
+-    def wrapper(self: Flask, *args: t.Any, **kwargs: t.Any) -> t.Any:
+-        if not args:
+-            args = (app_ctx._get_current_object(),)
+-        elif not isinstance(args[0], AppContext):
+-            args = (app_ctx._get_current_object(), *args)
+-
+-        return f(self, *args, **kwargs)
+-
+-    return update_wrapper(wrapper, f)  # type: ignore[return-value]
+-
+-
+ class Flask(App):
+     """The flask object implements a WSGI application and acts as the central
+     object.  It is passed the name of the module or package of the
+@@ -252,62 +221,6 @@ class Flask(App):
+     #: .. versionadded:: 0.8
+     session_interface: SessionInterface = SecureCookieSessionInterface()
+ 
+-    def __init_subclass__(cls, **kwargs: t.Any) -> None:
+-        import warnings
+-
+-        # These method signatures were updated to take a ctx param. Detect
+-        # overridden methods in subclasses that still have the old signature.
+-        # Show a deprecation warning and wrap to call with correct args.
+-        for method in (
+-            cls.handle_http_exception,
+-            cls.handle_user_exception,
+-            cls.handle_exception,
+-            cls.log_exception,
+-            cls.dispatch_request,
+-            cls.full_dispatch_request,
+-            cls.finalize_request,
+-            cls.make_default_options_response,
+-            cls.preprocess_request,
+-            cls.process_response,
+-            cls.do_teardown_request,
+-            cls.do_teardown_appcontext,
+-        ):
+-            base_method = getattr(Flask, method.__name__)
+-
+-            if method is base_method:
+-                # not overridden
+-                continue
+-
+-            # get the second parameter (first is self)
+-            iter_params = iter(inspect.signature(method).parameters.values())
+-            next(iter_params)
+-            param = next(iter_params, None)
+-
+-            # must have second parameter named ctx or annotated AppContext
+-            if param is None or not (
+-                # no annotation, match name
+-                (param.annotation is inspect.Parameter.empty and param.name == "ctx")
+-                or (
+-                    # string annotation, access path ends with AppContext
+-                    isinstance(param.annotation, str)
+-                    and param.annotation.rpartition(".")[2] == "AppContext"
+-                )
+-                or (
+-                    # class annotation
+-                    inspect.isclass(param.annotation)
+-                    and issubclass(param.annotation, AppContext)
+-                )
+-            ):
+-                warnings.warn(
+-                    f"The '{method.__name__}' method now takes 'ctx: AppContext'"
+-                    " as the first parameter. The old signature is deprecated"
+-                    " and will not be supported in Flask 4.0.",
+-                    DeprecationWarning,
+-                    stacklevel=2,
+-                )
+-                setattr(cls, method.__name__, remove_ctx(method))
+-                setattr(Flask, method.__name__, add_ctx(base_method))
+-
+     def __init__(
+         self,
+         import_name: str,

@@ -1,0 +1,132 @@
+{
+  "new_defects": {
+    "n": 16,
+    "qodo_exact": 14,
+    "qodo_wilson_ci95": [
+      0.639771727342413,
+      0.9650225122567595
+    ],
+    "coderabbit_exact": 9,
+    "coderabbit_wilson_ci95": [
+      0.331785563988119,
+      0.7690134759450765
+    ],
+    "mcnemar": {
+      "qodo_only": 5,
+      "coderabbit_only": 0,
+      "two_sided_exact_p": 0.0625
+    },
+    "bootstrap": {
+      "qodo_minus_coderabbit": 0.3125,
+      "ci95_percentile": [
+        0.125,
+        0.5625
+      ],
+      "rounds": 100000,
+      "seed": 20260904
+    }
+  },
+  "new_defects_and_repeats": {
+    "n": 20,
+    "qodo_exact": 18,
+    "qodo_wilson_ci95": [
+      0.6989663547715128,
+      0.9721335187862319
+    ],
+    "coderabbit_exact": 11,
+    "coderabbit_wilson_ci95": [
+      0.34208534245034233,
+      0.7418021417443759
+    ],
+    "mcnemar": {
+      "qodo_only": 7,
+      "coderabbit_only": 0,
+      "two_sided_exact_p": 0.015625
+    },
+    "bootstrap": {
+      "qodo_minus_coderabbit": 0.35,
+      "ci95_percentile": [
+        0.15,
+        0.55
+      ],
+      "rounds": 100000,
+      "seed": 20260904
+    }
+  },
+  "controls": {
+    "qodo": {
+      "false_positives": 0,
+      "n": 5
+    },
+    "coderabbit": {
+      "false_positives": 0,
+      "n": 5
+    }
+  },
+  "latency_seconds": {
+    "qodo": {
+      "n": 25,
+      "median": 62.0,
+      "min": 26.0,
+      "max": 149.0
+    },
+    "coderabbit": {
+      "n": 25,
+      "median": 7.0,
+      "min": 4.0,
+      "max": 543.0
+    }
+  },
+  "paired_median_latency": {
+    "qodo_minus_coderabbit_seconds": 55.0,
+    "ci95_percentile_seconds": [
+      -203.0,
+      83.0
+    ],
+    "rounds": 100000,
+    "seed": 20260904
+  },
+  "wall_latency_seconds": {
+    "qodo": {
+      "median": 62.0,
+      "min": 26.0,
+      "max": 149.0
+    },
+    "coderabbit": {
+      "median": 1120.0,
+      "min": 4.0,
+      "max": 4938.0
+    }
+  },
+  "paired_median_wall_latency": {
+    "qodo_minus_coderabbit_seconds": -1058.0,
+    "ci95_percentile_seconds": [
+      -2515.0,
+      -241.0
+    ],
+    "rounds": 100000,
+    "seed": 20260904
+  },
+  "verdict_counts": {
+    "qodo": {
+      "exact": 18,
+      "partial": 0,
+      "miss": 2
+    },
+    "coderabbit": {
+      "exact": 11,
+      "partial": 1,
+      "miss": 8
+    }
+  },
+  "patches": {
+    "qodo": {
+      "offered": 0,
+      "fully_fixed": 0
+    },
+    "coderabbit": {
+      "offered": 1,
+      "fully_fixed": 1
+    }
+  }
+}
