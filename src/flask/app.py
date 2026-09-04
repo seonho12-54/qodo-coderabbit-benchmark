@@ -927,9 +927,7 @@ class Flask(App):
         """
         exc_info = sys.exc_info()
         got_request_exception.send(self, _async_wrapper=self.ensure_sync, exception=e)
-        propagate = self.config["PROPAGATE_EXCEPTIONS"]
-
-        if propagate is None:
+        if (propagate := self.config["PROPAGATE_EXCEPTIONS"]) is None:
             propagate = self.testing or self.debug
 
         if propagate:
