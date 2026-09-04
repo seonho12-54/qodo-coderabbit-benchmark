@@ -86,9 +86,6 @@ Released 2024-11-13
     about resource limits to the security page. :issue:`5625`
 -   Add support for the ``Partitioned`` cookie attribute (CHIPS), with the
     ``SESSION_COOKIE_PARTITIONED`` config. :issue:`5472`
--   ``-e path`` takes precedence over default ``.env`` and ``.flaskenv`` files.
-    ``load_dotenv`` loads default files in addition to a path unless
-    ``load_defaults=False`` is passed. :issue:`5628`
 -   Support key rotation with the ``SECRET_KEY_FALLBACKS`` config, a list of old
     secret keys that can still be used for unsigning. Extensions will need to
     add support. :issue:`5621`

@@ -698,10 +698,9 @@ def _path_is_ancestor(path: str, other: str) -> bool:
 def load_dotenv(
     path: str | os.PathLike[str] | None = None, load_defaults: bool = True
 ) -> bool:
-    """Load "dotenv" files to set environment variables. A given path takes
-    precedence over ``.env``, which takes precedence over ``.flaskenv``. After
-    loading and combining these files, values are only set if the key is not
-    already set in ``os.environ``.
+    """Load "dotenv" files to set environment variables. After loading and
+    combining these files, values are only set if the key is not already set
+    in ``os.environ``.
 
     This is a no-op if `python-dotenv`_ is not installed.
 
@@ -713,8 +712,7 @@ def load_dotenv(
     :return: ``True`` if at least one env var was loaded.
 
     .. versionchanged:: 3.1
-        Added the ``load_defaults`` parameter. A given path takes precedence
-        over default files.
+        Added the ``load_defaults`` parameter.
 
     .. versionchanged:: 2.0
         The current directory is not changed to the location of the
