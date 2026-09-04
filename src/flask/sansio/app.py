@@ -534,9 +534,6 @@ class App(Scaffold):
         """Returns ``True`` if autoescaping should be active for the given
         template name. If no template name is given, returns `True`.
 
-        .. versionchanged:: 3.2
-            Use case-insensitive comparison instead of only lower case.
-
         .. versionchanged:: 2.2
             Autoescaping is now enabled by default for ``.svg`` files.
 
