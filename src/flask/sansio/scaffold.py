@@ -488,7 +488,7 @@ class Scaffold:
         every request that the blueprint handles. To register with a blueprint and
         execute before every request, use :meth:`.Blueprint.before_app_request`.
         """
-        self.before_request_funcs.setdefault(None, []).append(f)
+        self.before_request_funcs[None].append(f)
         return f
 
     @setupmethod
@@ -509,7 +509,7 @@ class Scaffold:
         every request that the blueprint handles. To register with a blueprint and
         execute after every request, use :meth:`.Blueprint.after_app_request`.
         """
-        self.after_request_funcs.setdefault(None, []).append(f)
+        self.after_request_funcs[None].append(f)
         return f
 
     @setupmethod
@@ -543,7 +543,7 @@ class Scaffold:
         every request that the blueprint handles. To register with a blueprint and
         execute after every request, use :meth:`.Blueprint.teardown_app_request`.
         """
-        self.teardown_request_funcs.setdefault(None, []).append(f)
+        self.teardown_request_funcs[None].append(f)
         return f
 
     @setupmethod
