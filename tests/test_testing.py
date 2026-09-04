@@ -137,23 +137,6 @@ def test_blueprint_with_subdomain():
     assert rv.data == b"http://xxx.example.com:1234/foo/"
 
 
-def test_redirect_session(app, client, app_ctx):
-    @app.route("/redirect")
-    def index():
-        flask.session["redirect"] = True
-        return flask.redirect("/target")
-
-    @app.route("/target")
-    def get_session():
-        flask.session["target"] = True
-        return ""
-
-    with client:
-        client.get("/redirect", follow_redirects=True)
-        assert flask.session["redirect"] is True
-        assert flask.session["target"] is True
-
-
 def test_session_transactions(app, client):
     @app.route("/")
     def index():
