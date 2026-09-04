@@ -441,7 +441,7 @@ class Flask(App):
         path = os.path.join(self.root_path, resource)
 
         if mode == "rb":
-            return open(path, mode)  # pyright: ignore
+            return open(path, mode)  # pyright: ignore[reportReturnType]
 
         return open(path, mode, encoding=encoding)
 
@@ -532,7 +532,9 @@ class Flask(App):
                 request.trusted_hosts = trusted_hosts
 
             # Check trusted_hosts here until bind_to_environ does.
-            request.host = get_host(request.environ, request.trusted_hosts)  # pyright: ignore
+            request.host = get_host(  # pyright: ignore[reportAttributeAccessIssue]
+                request.environ, request.trusted_hosts
+            )
             subdomain = None
             server_name = self.config["SERVER_NAME"]
 
@@ -1294,7 +1296,7 @@ class Flask(App):
             # decide if a 2-tuple has status or headers
             elif len_rv == 2:
                 if isinstance(rv[1], (Headers, dict, tuple, list)):
-                    rv, headers = rv  # pyright: ignore
+                    rv, headers = rv  # pyright: ignore[reportAssignmentType]
                 else:
                     rv, status = rv  # type: ignore[assignment,misc]
             # other sized tuples are not allowed
@@ -1320,7 +1322,7 @@ class Flask(App):
                 # waiting to do it manually, so that the class can handle any
                 # special logic
                 rv = self.response_class(
-                    rv,  # pyright: ignore
+                    rv,  # pyright: ignore[reportArgumentType]
                     status=status,
                     headers=headers,  # type: ignore[arg-type]
                 )

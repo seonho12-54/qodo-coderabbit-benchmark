@@ -110,7 +110,7 @@ class View:
                 return current_app.ensure_sync(self.dispatch_request)(**kwargs)  # type: ignore[no-any-return]
 
         else:
-            self = cls(*class_args, **class_kwargs)  # pyright: ignore
+            self = cls(*class_args, **class_kwargs)
 
             def view(**kwargs: t.Any) -> ft.ResponseReturnValue:
                 return current_app.ensure_sync(self.dispatch_request)(**kwargs)  # type: ignore[no-any-return]
