@@ -742,15 +742,15 @@ def load_dotenv(
 
     data: dict[str, str | None] = {}
 
+    if path is not None and os.path.isfile(path):
+        data |= dotenv.dotenv_values(path, encoding="utf-8")
+
     if load_defaults:
         for default_name in (".flaskenv", ".env"):
             if not (default_path := dotenv.find_dotenv(default_name, usecwd=True)):
                 continue
 
             data |= dotenv.dotenv_values(default_path, encoding="utf-8")
-
-    if path is not None and os.path.isfile(path):
-        data |= dotenv.dotenv_values(path, encoding="utf-8")
 
     for key, value in data.items():
         if key in os.environ or value is None:
