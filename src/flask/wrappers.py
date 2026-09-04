@@ -237,7 +237,7 @@ class Response(ResponseBase):
         Added :attr:`max_cookie_size`.
     """
 
-    default_mimetype: str | None = "text/html"
+    default_mimetype = "text/html"
 
     json_module = json
 
