@@ -252,7 +252,7 @@ def url_for(
 
 
 def redirect(
-    location: str, code: int = 303, Response: type[BaseResponse] | None = None
+    location: str, code: int = 302, Response: type[BaseResponse] | None = None
 ) -> BaseResponse:
     """Create a redirect response object.
 
