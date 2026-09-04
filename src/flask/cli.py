@@ -1068,19 +1068,17 @@ def routes_command(sort: str, all_methods: bool) -> None:
 
     ignored_methods = set() if all_methods else {"HEAD", "OPTIONS"}
     host_matching = current_app.url_map.host_matching
-    has_domain = any(rule.host if host_matching else rule.subdomain for rule in rules)
+    domain_attr = "host" if host_matching else "subdomain"
+    has_domain = any(getattr(rule, domain_attr) for rule in rules)
     rows = []
 
     for rule in rules:
         row = [
             rule.endpoint,
             ", ".join(sorted((rule.methods or set()) - ignored_methods)),
+            *([getattr(rule, domain_attr) or ""] if has_domain else []),
+            rule.rule,
         ]
-
-        if has_domain:
-            row.append((rule.host if host_matching else rule.subdomain) or "")
-
-        row.append(rule.rule)
         rows.append(row)
 
     headers = ["Endpoint", "Methods"]
