@@ -926,7 +926,7 @@ class Flask(App):
         .. versionadded:: 0.3
         """
         exc_info = sys.exc_info()
-        got_request_exception.send(self, _async_wrapper=self.ensure_sync, exception=e)
+        got_request_exception.send(self, exception=e)
         propagate = self.config["PROPAGATE_EXCEPTIONS"]
 
         if propagate is None:
@@ -1013,7 +1013,7 @@ class Flask(App):
         self._got_first_request = True
 
         try:
-            request_started.send(self, _async_wrapper=self.ensure_sync)
+            request_started.send(self)
             rv = self.preprocess_request(ctx)
             if rv is None:
                 rv = self.dispatch_request(ctx)
@@ -1042,9 +1042,7 @@ class Flask(App):
         response = self.make_response(rv)
         try:
             response = self.process_response(ctx, response)
-            request_finished.send(
-                self, _async_wrapper=self.ensure_sync, response=response
-            )
+            request_finished.send(self, response=response)
         except Exception:
             if not from_error_handler:
                 raise
@@ -1449,7 +1447,7 @@ class Flask(App):
                         self.ensure_sync(func)(exc)
 
         with collect_errors:
-            request_tearing_down.send(self, _async_wrapper=self.ensure_sync, exc=exc)
+            request_tearing_down.send(self, exc=exc)
 
         collect_errors.raise_any("Errors during request teardown")
 
@@ -1477,7 +1475,7 @@ class Flask(App):
                 self.ensure_sync(func)(exc)
 
         with collect_errors:
-            appcontext_tearing_down.send(self, _async_wrapper=self.ensure_sync, exc=exc)
+            appcontext_tearing_down.send(self, exc=exc)
 
         collect_errors.raise_any("Errors during app teardown")
 
