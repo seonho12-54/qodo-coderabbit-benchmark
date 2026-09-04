@@ -1472,8 +1472,8 @@ class Flask(App):
         """
         collect_errors = _CollectErrors()
 
-        for func in reversed(self.teardown_appcontext_funcs):
-            with collect_errors:
+        with collect_errors:
+            for func in reversed(self.teardown_appcontext_funcs):
                 self.ensure_sync(func)(exc)
 
         with collect_errors:
