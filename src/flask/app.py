@@ -284,20 +284,7 @@ class Flask(App):
             param = next(iter_params, None)
 
             # must have second parameter named ctx or annotated AppContext
-            if param is None or not (
-                # no annotation, match name
-                (param.annotation is inspect.Parameter.empty and param.name == "ctx")
-                or (
-                    # string annotation, access path ends with AppContext
-                    isinstance(param.annotation, str)
-                    and param.annotation.rpartition(".")[2] == "AppContext"
-                )
-                or (
-                    # class annotation
-                    inspect.isclass(param.annotation)
-                    and issubclass(param.annotation, AppContext)
-                )
-            ):
+            if param is None:
                 warnings.warn(
                     f"The '{method.__name__}' method now takes 'ctx: AppContext'"
                     " as the first parameter. The old signature is deprecated"
