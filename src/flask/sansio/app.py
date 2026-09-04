@@ -970,7 +970,7 @@ class App(Scaffold):
         # passed endpoint instead of using request.blueprints.
         if "." in endpoint:
             names = chain(
-                names, reversed(_split_blueprint_path(endpoint.rpartition(".")[0]))
+                names, _split_blueprint_path(endpoint.rpartition(".")[0])
             )
 
         for name in names:

@@ -605,7 +605,7 @@ class Flask(App):
 
         # A template may be rendered outside a request context.
         if ctx.has_request:
-            names = chain(names, reversed(ctx.request.blueprints))
+            names = chain(names, ctx.request.blueprints)
 
         # The values passed to render_template take precedence. Keep a
         # copy to re-apply after all context functions.
@@ -1377,7 +1377,7 @@ class Flask(App):
         further request handling is stopped.
         """
         req = ctx.request
-        names = (None, *reversed(req.blueprints))
+        names = (None, *req.blueprints)
 
         for name in names:
             if name in self.url_value_preprocessors:
