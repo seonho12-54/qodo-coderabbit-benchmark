@@ -360,7 +360,6 @@ class SecureCookieSessionInterface(SessionInterface):
                     secure=secure,
                     partitioned=partitioned,
                     samesite=samesite,
-                    httponly=httponly,
                 )
                 response.vary.add("Cookie")
 
