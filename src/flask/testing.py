@@ -177,7 +177,7 @@ class FlaskClient(Client):
             app.session_interface.save_session(app, sess, resp)
 
         self._update_cookies_from_response(
-            urlsplit(ctx.request.host_url).hostname or "localhost",
+            ctx.request.host.partition(":")[0],
             ctx.request.path,
             resp.headers.getlist("Set-Cookie"),
         )
