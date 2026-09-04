@@ -742,15 +742,18 @@ def load_dotenv(
 
     data: dict[str, str | None] = {}
 
+    def merge_file(file_path: str | os.PathLike[str]) -> None:
+        data.update(dotenv.dotenv_values(file_path, encoding="utf-8"))
+
+    if path is not None and os.path.isfile(path):
+        merge_file(path)
+
     if load_defaults:
         for default_name in (".flaskenv", ".env"):
             if not (default_path := dotenv.find_dotenv(default_name, usecwd=True)):
                 continue
 
-            data |= dotenv.dotenv_values(default_path, encoding="utf-8")
-
-    if path is not None and os.path.isfile(path):
-        data |= dotenv.dotenv_values(path, encoding="utf-8")
+            merge_file(default_path)
 
     for key, value in data.items():
         if key in os.environ or value is None:
