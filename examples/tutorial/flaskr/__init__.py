@@ -21,7 +21,10 @@ def create_app(test_config=None):
         app.config.update(test_config)
 
     # ensure the instance folder exists
-    os.makedirs(app.instance_path, exist_ok=True)
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
 
     @app.route("/hello")
     def hello():
