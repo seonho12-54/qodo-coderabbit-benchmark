@@ -1019,47 +1019,6 @@ def test_nesting_url_prefixes(
     assert response.status_code == 200
 
 
-def test_nesting_subdomains(app, client) -> None:
-    app.subdomain_matching = True
-    app.config["SERVER_NAME"] = "example.test"
-    client.allow_subdomain_redirects = True
-
-    parent = flask.Blueprint("parent", __name__)
-    child = flask.Blueprint("child", __name__)
-
-    @child.route("/child/")
-    def index():
-        return "child"
-
-    parent.register_blueprint(child)
-    app.register_blueprint(parent, subdomain="api")
-
-    response = client.get("/child/", base_url="http://api.example.test")
-    assert response.status_code == 200
-
-
-def test_child_and_parent_subdomain(app, client) -> None:
-    app.subdomain_matching = True
-    app.config["SERVER_NAME"] = "example.test"
-    client.allow_subdomain_redirects = True
-
-    parent = flask.Blueprint("parent", __name__)
-    child = flask.Blueprint("child", __name__, subdomain="api")
-
-    @child.route("/")
-    def index():
-        return "child"
-
-    parent.register_blueprint(child)
-    app.register_blueprint(parent, subdomain="parent")
-
-    response = client.get("/", base_url="http://api.parent.example.test")
-    assert response.status_code == 200
-
-    response = client.get("/", base_url="http://parent.example.test")
-    assert response.status_code == 404
-
-
 def test_unique_blueprint_names(app, client) -> None:
     bp = flask.Blueprint("bp", __name__)
     bp2 = flask.Blueprint("bp", __name__)

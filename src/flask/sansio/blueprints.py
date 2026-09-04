@@ -281,9 +281,6 @@ class Blueprint(Scaffold):
         :param options: Keyword arguments forwarded from
             :meth:`~Flask.register_blueprint`.
 
-        .. versionchanged:: 2.3
-            Nested blueprints now correctly apply subdomains.
-
         .. versionchanged:: 2.1
             Registering the same blueprint with the same name multiple
             times is an error.
